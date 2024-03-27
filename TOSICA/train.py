@@ -301,7 +301,7 @@ def fit_model(adata, gmt_path, project = None, pre_weights='', label_name='Cellt
         if platform.system().lower() == 'windows':
             torch.save(model.state_dict(), project_path+"/model-{}.pth".format(epoch))
         else:
-            torch.save(model.state_dict(), "/%s"%project_path+"/model-{}.pth".format(epoch))
+            torch.save(model.state_dict(), project_path+"/model-{}.pth".format(epoch))
     print('Training finished!')
 
 #train(adata, gmt_path, pre_weights, batch_size=8, epochs=20)
