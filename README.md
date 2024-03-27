@@ -4,7 +4,11 @@
 
 ## Package: `TOSICA`
 
-We created the python package called `TOSICA` that uses `scanpy` ans `torch` to explainablely annotate cell type on single-cell RNA-seq data.
+We created the python package called `TOSICA` that uses `scanpy` and `torch` to explainablely annotate cell type on single-cell RNA-seq data.
+
+## Updates to this forked repository
+
+The original Tosica package was updated to be able to write out to outside the current working directory.
 
 ### Requirements
 
