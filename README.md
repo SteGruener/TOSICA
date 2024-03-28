@@ -52,20 +52,20 @@ TOSICA.train(ref_adata, gmt_path,project=<my_project>,label_name=<label_key>)
 
 #### Input:
 
-+ `ref_adata`: an `AnnData` object of reference dataset.
-+ `gmt_path` : default pre-prepared mask or path to .gmt files.
-+ `<my_project>`: the model will be saved in a folder named <my_project>. Default: `<gmt_path>_20xxxxxx`.
++ `ref_adata`: an `AnnData` object of the reference dataset.
++ `gmt_path`: default pre-prepared mask or path to .gmt files.
++ `<my_project>`: path to where the model will be saved. Default: `<gmt_path>_20xxxxxx`.
 + `<label_key>`: the name of the label column in `ref_adata.obs`.
 
 #### Pre-prepared mask:
 
 + `human_gobp` : GO_bp.gmt
-+ `human_immune` : immune.gmt
-+ `human_reactome` : reactome.gmt
-+ `human_tf` : TF.gmt
++ `human_immune`: immune.gmt
++ `human_reactome`: reactome.gmt
++ `human_tf`: TF.gmt
 + `mouse_gobp` : m_GO_bp.gmt
-+ `mouse_reactome` : m_reactome.gmt
-+ `mouse_tf` : m_TF.gmt
++ `mouse_reactome`: m_reactome.gmt
++ `mouse_tf`: m_TF.gmt
 
 #### Output:
 
