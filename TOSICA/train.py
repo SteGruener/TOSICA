@@ -298,6 +298,16 @@ def fit_model(adata, gmt_path, project = None, pre_weights='', label_name='Cellt
         tb_writer.add_scalar(tags[2], val_loss, epoch)
         tb_writer.add_scalar(tags[3], val_acc, epoch)
         tb_writer.add_scalar(tags[4], optimizer.param_groups[0]["lr"], epoch)
+
+        #~~ add these lines to write out performance metrics to file
+        performance_file = f"{project_path}/performance_metrics.txt"
+        with open(performance_file, "a") as f:
+            f.write(f"Epoch {epoch}:\n")
+            f.write(f"Train Loss: {train_loss:.4f}, Train Acc: {train_acc:.4f}\n")
+            f.write(f"Val Loss: {val_loss:.4f}, Val Acc: {val_acc:.4f}\n")
+            f.write("-" * 40 + "\n")
+        #~~ END
+
         if platform.system().lower() == 'windows':
             torch.save(model.state_dict(), project_path+"/model-{}.pth".format(epoch))
         else:

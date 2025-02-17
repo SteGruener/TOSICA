@@ -48,6 +48,12 @@ def prediect(adata,model_weight_path,project,mask_path,laten=False,save_att = 'X
     #mask_path = os.getcwd()+project+'/mask.npy'
     mask = np.load(mask_path)
     project_path = project
+
+    #~~ add these lines to write out prediction scores for all classes during prediction
+    with open(f"{project_path}/prediction_scores.csv", "w") as f:
+    f.write("Instance_ID," + ",".join([f"Class_{i}_Score" for i in range(n_c)]) + "\n")
+    #~~ END
+
     pathway = pd.read_csv(project_path+'/pathway.csv', index_col=0)
     dictionary = pd.read_table(project_path+'/label_dictionary.csv', sep=',',header=0,index_col=0)
     n_c = len(dictionary)
@@ -105,6 +111,15 @@ def prediect(adata,model_weight_path,project,mask_path,laten=False,save_att = 'X
                 lat, pre, weights = model(exp.to(device))
                 pre = torch.squeeze(pre).cpu()
                 pre = F.softmax(pre,1)
+
+                #~~ add these lines to write out prediction scores for all classes during prediction
+                with open(f"{project_path}/prediction_scores.csv", "a") as f:
+                    for i, scores in enumerate(pre):
+                        instance_id = n_line - len(pre) + i
+                        scores_str = ",".join([f"{score:.4f}" for score in scores.numpy()])
+                        f.write(f"{instance_id},{scores_str}\n")
+                #~~ END
+
                 predict_class = np.empty(shape=0)
                 pre_class = np.empty(shape=0) 
                 for i in range(len(pre)):
