@@ -51,7 +51,7 @@ def prediect(adata,model_weight_path,project,mask_path,laten=False,save_att = 'X
 
     #~~ add these lines to write out prediction scores for all classes during prediction
     with open(f"{project_path}/prediction_scores.csv", "w") as f:
-    f.write("Instance_ID," + ",".join([f"Class_{i}_Score" for i in range(n_c)]) + "\n")
+        f.write("Instance_ID," + ",".join([f"Class_{i}_Score" for i in range(n_c)]) + "\n")
     #~~ END
 
     pathway = pd.read_csv(project_path+'/pathway.csv', index_col=0)
