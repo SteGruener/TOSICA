@@ -48,18 +48,18 @@ def prediect(adata,model_weight_path,project,mask_path,laten=False,save_att = 'X
     #mask_path = os.getcwd()+project+'/mask.npy'
     mask = np.load(mask_path)
     project_path = project
-
-    #~~ add these lines to write out prediction scores for all classes during prediction
-    with open(f"{project_path}/prediction_scores.csv", "w") as f:
-        f.write("Instance_ID," + ",".join([f"Class_{i}_Score" for i in range(n_c)]) + "\n")
-    #~~ END
-
     pathway = pd.read_csv(project_path+'/pathway.csv', index_col=0)
     dictionary = pd.read_table(project_path+'/label_dictionary.csv', sep=',',header=0,index_col=0)
     n_c = len(dictionary)
     label_name = dictionary.columns[0]
     dictionary.loc[(dictionary.shape[0])] = 'Unknown'
     dic = {}
+
+    #~~ add these lines to write out prediction scores for all classes during prediction
+    with open(f"{project_path}/prediction_scores.csv", "w") as f:
+        f.write("Instance_ID," + ",".join([f"Class_{i}_Score" for i in range(n_c)]) + "\n")
+    #~~ END
+
     for i in range(len(dictionary)):
         dic[i] = dictionary[label_name][i]
     model = create_model(num_classes=n_c, num_genes=num_genes,mask = mask, has_logits=False,depth=depth,num_heads=num_heads).to(device)
