@@ -57,7 +57,7 @@ def prediect(adata,model_weight_path,project,mask_path,laten=False,save_att = 'X
 
     #~~ add these lines to write out prediction scores for all classes during prediction
     with open(f"{project_path}/prediction_scores.csv", "w") as f:
-        f.write("Instance_ID," + ",".join([f"Class_{i}_Score" for i in range(n_c)]) + "\n")
+        f.write("query_cell_ID," + ",".join([f"{dictionary[label_name][i]}_Score" for i in range(n_c)]) + "\n")
     #~~ END
 
     for i in range(len(dictionary)):
@@ -115,9 +115,9 @@ def prediect(adata,model_weight_path,project,mask_path,laten=False,save_att = 'X
                 #~~ add these lines to write out prediction scores for all classes during prediction
                 with open(f"{project_path}/prediction_scores.csv", "a") as f:
                     for i, scores in enumerate(pre):
-                        instance_id = n_line - len(pre) + i
+                        cell_id = adata.obs_names[n_line - len(pre) + i]
                         scores_str = ",".join([f"{score:.4f}" for score in scores.numpy()])
-                        f.write(f"{instance_id},{scores_str}\n")
+                        f.write(f"{cell_id},{scores_str}\n")
                 #~~ END
 
                 predict_class = np.empty(shape=0)
