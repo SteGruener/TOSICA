@@ -89,7 +89,7 @@ def prediect(adata,model_weight_path,project,mask_path,laten=False,save_att = 'X
     n_line = 0
     adata_list = []
     #~~~ This section was adapted due to wrong index management in last batch
-    while (n_line) <= all_line:
+    while (n_line) < all_line:
         if (all_line-n_line)%batch_size != 1:
             expdata = pd.DataFrame(todense(adata[n_line:n_line+min(n_step,(all_line-n_line))]),index=np.array(adata[n_line:n_line+min(n_step,(all_line-n_line))].obs_names).tolist(), columns=np.array(adata.var_names).tolist())
             print(n_line)
