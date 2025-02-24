@@ -119,6 +119,12 @@ def prediect(adata,model_weight_path,project,mask_path,laten=False,save_att = 'X
                 # Iterate through the predictions
                 for i, scores in enumerate(pre):
                     # Get the correct cell ID
+                    # Debugging outputs
+                    print(f"n_line: {n_line}")
+                    print(f"len(pre): {len(pre)}")
+                    print(f"Range for i: {list(range(len(pre)))}")
+                    print(f"Calculated indices: {[n_line - len(pre) + i for i in range(len(pre))]}")
+                    print(f"adata.obs_names length: {len(adata.obs_names)}")
                     cell_id = adata.obs_names[n_line - len(pre) + i]
                     
                     # Convert the scores directly without calling .numpy() repeatedly (assuming scores is already a NumPy array or compatible)
