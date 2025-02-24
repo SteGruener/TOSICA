@@ -113,11 +113,23 @@ def prediect(adata,model_weight_path,project,mask_path,laten=False,save_att = 'X
                 pre = F.softmax(pre,1)
 
                 #~~ add these lines to write out prediction scores for all classes during prediction
+                # Create an empty list to accumulate the lines
+                lines_to_write = []
+
+                # Iterate through the predictions
+                for i, scores in enumerate(pre):
+                    # Get the correct cell ID
+                    cell_id = adata.obs_names[n_line - len(pre) + i]
+                    
+                    # Convert the scores directly without calling .numpy() repeatedly (assuming scores is already a NumPy array or compatible)
+                    scores_str = ",".join(f"{score:.4f}" for score in scores)  # scores is assumed to be a NumPy array or similar
+                    
+                    # Append the formatted line to the list
+                    lines_to_write.append(f"{cell_id},{scores_str}\n")
+
+                # Open the file once and write all the accumulated lines in one go
                 with open(f"{project_path}/prediction_scores.csv", "a") as f:
-                    for i, scores in enumerate(pre):
-                        cell_id = adata.obs_names[n_line - len(pre) + i]
-                        scores_str = ",".join([f"{score:.4f}" for score in scores.numpy()])
-                        f.write(f"{cell_id},{scores_str}\n")
+                    f.writelines(lines_to_write)
                 #~~ END
 
                 predict_class = np.empty(shape=0)
