@@ -88,15 +88,18 @@ def prediect(adata,model_weight_path,project,mask_path,laten=False,save_att = 'X
     all_line = adata.shape[0]
     n_line = 0
     adata_list = []
+    #~~~ This section was adapted due to wrong index management in last batch
     while (n_line) <= all_line:
         if (all_line-n_line)%batch_size != 1:
             expdata = pd.DataFrame(todense(adata[n_line:n_line+min(n_step,(all_line-n_line))]),index=np.array(adata[n_line:n_line+min(n_step,(all_line-n_line))].obs_names).tolist(), columns=np.array(adata.var_names).tolist())
             print(n_line)
-            n_line = n_line+n_step
+            n_line = min(n_line + n_step, all_line)
         else:
-            expdata = pd.DataFrame(todense(adata[n_line:n_line+min(n_step,(all_line-n_line-2))]),index=np.array(adata[n_line:n_line+min(n_step,(all_line-n_line-2))].obs_names).tolist(), columns=np.array(adata.var_names).tolist())
-            n_line = (all_line-n_line-2)
+            remaining_lines = all_line - n_line  # Calculate how many lines are left
+            expdata = pd.DataFrame(todense(adata[n_line:n_line+remaining_lines]),index=np.array(adata[n_line:n_line+remaining_lines].obs_names).tolist(),columns=np.array(adata.var_names).tolist())
             print(n_line)
+            n_line = all_line
+        #~~~ END
         expdata = np.array(expdata)
         expdata = torch.from_numpy(expdata.astype(np.float32))
         data_loader = torch.utils.data.DataLoader(expdata,
@@ -118,14 +121,12 @@ def prediect(adata,model_weight_path,project,mask_path,laten=False,save_att = 'X
 
                 # Iterate through the predictions
                 for i, scores in enumerate(pre):
-                    # Get the correct cell ID
-                    # Debugging outputs
-                    print(f"n_line: {n_line}")
-                    print(f"len(pre): {len(pre)}")
-                    print(f"Range for i: {list(range(len(pre)))}")
-                    print(f"Calculated indices: {[n_line - len(pre) + i for i in range(len(pre))]}")
-                    print(f"adata.obs_names length: {len(adata.obs_names)}")
-                    cell_id = adata.obs_names[n_line - len(pre) + i]
+                    cell_id_index = n_line - len(pre) + i
+                    if cell_id_index < len(adata.obs_names):  # Only access if within bounds
+                        cell_id = adata.obs_names[cell_id_index]
+                    else:
+                        print(f"Warning: Skipping index {cell_id_index} as it is out of bounds!")
+                        continue
                     
                     # Convert the scores directly without calling .numpy() repeatedly (assuming scores is already a NumPy array or compatible)
                     scores_str = ",".join(f"{score:.4f}" for score in scores)  # scores is assumed to be a NumPy array or similar
